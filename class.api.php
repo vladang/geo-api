@@ -28,13 +28,13 @@ class Api
     private function checkAccess($token)
     {
         if (!$token)
-            return json_encode(['status' => 'error', 'message' => 'Токен не передан']);
+            throw new RuntimeException('Ошибка: токен не передан', 404);
 
         $user = $this->pdo->prepare('SELECT status FROM users WHERE token = :token');
         $user->execute(['token' => $token]);
 
         if ($user->fetchColumn() != 'on')
-            return json_encode(['status' => 'error', 'message' => 'Не верный токен или пользователь заблокирован']);
+            throw new RuntimeException('Ошибка: не верный токен или пользователь заблокирован', 404);
     }
 
     /*
